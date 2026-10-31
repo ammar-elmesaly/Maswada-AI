@@ -12,10 +12,9 @@ export const config = {
     secretKey: process.env.CLERK_SECRET_KEY || '',
   },
   sqlitePath: process.env.SQLITE_PATH || path.join(__dirname, '../../data/maswada.db'),
-  openai: {
-    apiKey: process.env.OPENAI_API_KEY || '',
-    organization: process.env.OPENAI_ORGANIZATION_ID || '',
-    model: process.env.OPENAI_MODEL || 'gpt-5-mini',
+  gemini: {
+    apiKey: process.env.GEMINI_API_KEY || '',
+    model: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
   },
 };
 

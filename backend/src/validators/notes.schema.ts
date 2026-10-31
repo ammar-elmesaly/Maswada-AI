@@ -7,7 +7,7 @@ export const createNoteSchema = z.object({
 });
 
 export const updateNoteSchema = z.object({
-  title: z.string().min(1).max(255).optional(),
+  title: z.string().min(0).max(255).optional(),
   content: z.string().optional(), // Allow empty content
   summary: z.string().nullable().optional(),
 });

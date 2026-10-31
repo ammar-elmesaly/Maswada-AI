@@ -13,9 +13,9 @@ async function start() {
     app.listen(config.port, () => {
       console.log(`🚀 Server running on http://localhost:${config.port}`);
       console.log(`📝 Environment: ${config.nodeEnv}`);
-      console.log(`🤖 OpenAI: ${config.openai.apiKey ? 'Configured ✓' : 'Not configured (set OPENAI_API_KEY)'}`);
-      if (config.openai.apiKey) {
-        console.log(`🎯 OpenAI Model: ${config.openai.model}`);
+      console.log(`🤖 Gemini: ${config.gemini.apiKey ? 'Configured ✓' : 'Not configured (set GEMINI_API_KEY)'}`);
+      if (config.gemini.apiKey) {
+        console.log(`🎯 Gemini Model: ${config.gemini.model}`);
       }
     });
   } catch (error) {

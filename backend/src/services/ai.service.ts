@@ -1,6 +1,6 @@
 import { SummarizeInput, RewriteInput, TranslateInput } from '../validators/ai.schema';
 import { notesService } from './notes.service';
-import { openAiService } from './openai.service';
+import { geminiService } from './gemini.service';
 
 export class AiService {
   async summarize(userId: string, input: SummarizeInput): Promise<{ result: string }> {
@@ -16,7 +16,7 @@ export class AiService {
       throw new Error('No text to summarize');
     }
 
-    const result = await openAiService.summarize(text);
+    const result = await geminiService.summarize(text);
     return { result };
   }
 
@@ -33,7 +33,7 @@ export class AiService {
       throw new Error('No text to rewrite');
     }
 
-    const result = await openAiService.rewrite(text, input.mode);
+    const result = await geminiService.rewrite(text, input.mode);
     return { result };
   }
 
@@ -51,7 +51,7 @@ export class AiService {
     }
 
     // Auto-detects language and translates to the opposite (EN↔AR)
-    const result = await openAiService.translate(text);
+    const result = await geminiService.translate(text);
     return { result };
   }
 }
