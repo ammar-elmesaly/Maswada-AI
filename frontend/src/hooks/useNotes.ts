@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createNote, deleteNote, getAllNotes, getNoteById, updateNote } from "./notes";
+import { createNote, deleteNote, getAllNotes, getNoteById, updateNote } from "../api/notes";
 import { useAuth } from "@clerk/react";
 import type { CreateNoteDTO } from "@/types";
 

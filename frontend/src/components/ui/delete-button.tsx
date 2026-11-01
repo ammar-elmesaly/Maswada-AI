@@ -13,6 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { FormattedMessage } from "react-intl";
 
 type DeleteButtonProps = {
   handleDelete: () => void;
@@ -30,7 +31,7 @@ export function DeleteButton({ handleDelete, title, description, buttonText = "D
           className="text-red-500 font-semi-bold hover:text-red-600 cursor-pointer"
         >
           <Trash2 />
-          {buttonText}
+          {buttonText === "Delete Note" ? <FormattedMessage id="deleteNote" /> : buttonText}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent size="sm">
@@ -44,8 +45,8 @@ export function DeleteButton({ handleDelete, title, description, buttonText = "D
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel variant="outline" className="cursor-pointer">Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} variant="destructive" className="cursor-pointer">Delete</AlertDialogAction>
+          <AlertDialogCancel variant="outline" className="cursor-pointer"><FormattedMessage id="cancel" /></AlertDialogCancel>
+          <AlertDialogAction onClick={handleDelete} variant="destructive" className="cursor-pointer"><FormattedMessage id="delete" /></AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -11,12 +11,11 @@
    - **Publishable Key** (starts with `pk_test_`) - Used in frontend
    - **Secret Key** (starts with `sk_test_`) - Used in backend
 
-#### OpenAI (Required for AI Features)
-1. Go to [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Create an account or sign in
-3. Create a new API key
-4. Copy your **API Key** (starts with `sk-`)
-5. (Optional) If you have multiple organizations, get your **Organization ID** from [Organization Settings](https://platform.openai.com/account/organization) (starts with `org-`)
+#### Google Gemini (Required for AI Features)
+1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Sign in with your Google account
+3. Create a Gemini API key
+4. Copy the key and keep it private
 
 ### 2. Backend Setup
 
@@ -32,8 +31,8 @@ cp .env.example .env
 # Edit .env and set:
 # CLERK_PUBLISHABLE_KEY=pk_test_your_publishable_key_here
 # CLERK_SECRET_KEY=sk_test_your_secret_key_here
-# OPENAI_API_KEY=sk-your_openai_api_key_here
-# OPENAI_ORGANIZATION_ID=org-your_org_id_here  (optional)
+# GEMINI_API_KEY=your_gemini_api_key_here
+# GEMINI_MODEL=gemini-3.5-flash-lite  (optional)
 
 # Initialize database
 npm run db:sync

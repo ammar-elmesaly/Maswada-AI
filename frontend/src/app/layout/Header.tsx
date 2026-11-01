@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button"
+import { useLanguage } from "@/hooks/useLanguage";
 import { Languages } from "lucide-react"
+import { FormattedMessage } from "react-intl";
 import { Link } from "react-router-dom"
 
 export function Header() {
+  const { locale, toggleLanguage } = useLanguage();
   return (
     <header className="sticky top-0 z-50 w-full">
       <div className="mx-auto w-full max-w-360 px-4 pt-4 sm:px-6 lg:px-8">
@@ -13,16 +16,16 @@ export function Header() {
               to="/"
               className="text-sm font-semibold tracking-wide"
             >
-              Maswada AI
+              <FormattedMessage id="title" />
             </Link>
             <span className="hidden text-xs text-muted-foreground sm:inline">
-              Smart Notes with AI
+              <FormattedMessage id="smartNotesWithAI" />
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Button className="cursor-pointer" variant="outline">
+            <Button className="cursor-pointer" variant="outline" onClick={toggleLanguage}>
               <Languages />
-              العربية
+              <FormattedMessage id={locale === "ar" ? "arabic" : "english"} />
             </Button>
           </div>
         </div>

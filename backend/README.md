@@ -9,7 +9,7 @@ Backend REST API for the Maswada AI note-taking application with AI features.
 - **Database**: SQLite with Sequelize ORM
 - **Authentication**: Clerk (token verification)
 - **Validation**: Zod
-- **AI Provider**: Abstracted (mock provider included)
+- **AI Provider**: Google Gemini via `@google/genai`
 
 ## Setup
 
@@ -28,6 +28,7 @@ cp .env.example .env
 ```
 
 Required configuration:
+
 - `CLERK_SECRET_KEY`: Get from Clerk dashboard
 - `FRONTEND_ORIGIN`: Frontend URL for CORS (default: http://localhost:5173)
 - `PORT`: Server port (default: 3001)
@@ -65,6 +66,7 @@ The server will start on `http://localhost:3001` (or your configured PORT).
 ### Protected (require Bearer token)
 
 **Notes:**
+
 - `GET /api/notes` - List all notes for authenticated user
 - `POST /api/notes` - Create a new note
 - `GET /api/notes/:id` - Get a single note
@@ -72,6 +74,7 @@ The server will start on `http://localhost:3001` (or your configured PORT).
 - `DELETE /api/notes/:id` - Delete a note
 
 **AI Features:**
+
 - `POST /api/ai/summarize` - Summarize text or note
 - `POST /api/ai/rewrite` - Rewrite text in different styles
 - `POST /api/ai/translate` - Translate text between English and Arabic
@@ -103,20 +106,22 @@ The backend verifies tokens with Clerk and extracts the `userId` to scope all op
 }
 ```
 
-## AI Features (OpenAI)
+## AI Features (Google Gemini)
 
-The backend uses OpenAI's **GPT-5-mini** model directly for all AI features.
+The backend uses Google's Gemini models directly through the `@google/genai` SDK for all AI features.
 
 **Setup:**
-1. Get API key from [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Set `OPENAI_API_KEY=sk-...` in `.env`
-3. (Optional) Set `OPENAI_ORGANIZATION_ID=org-...` if you have multiple organizations
+
+1. Get an API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Set `GEMINI_API_KEY=...` in `.env`
+3. (Optional) Set `GEMINI_MODEL=gemini-3.5-flash-lite` to choose a model
 
 **Features:**
+
 - **Summarize**: Concise summaries in EN or AR
 - **Rewrite**: Multiple modes (comedy, formal, casual)
-- **Translate**: High-quality EN ↔ AR translation powered by GPT-5
-- **Model**: Uses gpt-5-mini for optimal performance and cost
+- **Translate**: High-quality EN ↔ AR translation powered by Gemini
+- **Model**: Uses the model configured by `GEMINI_MODEL`
 
 ## Development Notes
 

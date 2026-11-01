@@ -22,7 +22,7 @@ Throughout the course, you'll implement these production-ready features:
 
 - 🔐 **Secure Authentication** - Learn Clerk-based authentication patterns
 - 📝 **Notes Management** - Master full CRUD operations with TypeScript
-- 🤖 **AI Integration** (OpenAI GPT-5-mini):
+- 🤖 **AI Integration** (Google Gemini):
   - **Summarize** - Generate intelligent summaries
   - **Rewrite** - Improve text with 4 different modes
   - **Translate** - Translate between English and Arabic
@@ -41,7 +41,7 @@ Throughout the course, you'll implement these production-ready features:
 - **Database**: SQLite with Sequelize ORM
 - **Authentication**: Clerk (token verification)
 - **Validation**: Zod
-- **AI**: OpenAI GPT-5-mini
+- **AI**: Google Gemini via `@google/genai`
 
 ### Frontend
 - **Framework**: React 19 + TypeScript
@@ -62,7 +62,7 @@ maswada-ai/
 │   │   ├── models/    # Sequelize models
 │   │   ├── middlewares/ # Auth, error handling
 │   │   ├── routes/    # API endpoints
-│   │   ├── services/  # Business logic (notes, ai, openai)
+│   │   ├── services/  # Business logic (notes, ai, gemini)
 │   │   ├── validators/ # Zod schemas
 │   │   ├── app.ts     # Express app setup
 │   │   └── server.ts  # Server entry point
@@ -93,7 +93,7 @@ Before starting the course, ensure you have:
 - Node.js 18+ and npm installed
 - A code editor (we recommend Cursor)
 - A Clerk account (free tier works)
-- An OpenAI API key (for AI features)
+- A Google Gemini API key (for AI features)
 - Basic knowledge of JavaScript/TypeScript and React
 
 ## Quick Start
@@ -157,7 +157,7 @@ Frontend will run on `http://localhost:5173`
 **Status**: COMPLETED ✓
 
 - [x] Express.js setup with TypeScript
-- [x] Environment configuration (Clerk + OpenAI)
+- [x] Environment configuration (Clerk + Gemini)
 - [x] Sequelize + SQLite setup
 - [x] Database models (Note)
 - [x] Error handling middleware
@@ -200,18 +200,18 @@ Frontend will run on `http://localhost:5173`
 
 ---
 
-### ✅ Phase D: AI Endpoints + OpenAI Integration
+### ✅ Phase D: AI Endpoints + Gemini Integration
 **Status**: COMPLETED ✓
 
-- [x] OpenAI service with GPT-5-mini
+- [x] Gemini service with configurable model
 - [x] AI service layer
 - [x] AI routes (summarize, rewrite, translate)
 - [x] Zod validation for AI requests
-- [x] Direct OpenAI SDK integration (no abstraction needed)
+- [x] Direct Google GenAI SDK integration (no abstraction needed)
 
-**Files**: `backend/src/{routes/ai.ts, services/ai.service.ts, services/openai.service.ts, validators/ai.schema.ts}`
+**Files**: `backend/src/{routes/ai.ts, services/ai.service.ts, services/gemini.service.ts, validators/ai.schema.ts}`
 
-**Completed**: Using GPT-5-mini for all AI features. Ready to test once auth is implemented.
+**Completed**: Using Google Gemini for all AI features. Ready to test once auth is implemented.
 
 ---
 
@@ -357,8 +357,8 @@ FRONTEND_ORIGIN=http://localhost:5173
 CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
 SQLITE_PATH=./data/maswada.db
-OPENAI_API_KEY=sk-...
-OPENAI_ORGANIZATION_ID=org-...  # Optional
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-3.5-flash-lite  # Optional
 ```
 
 ### Frontend (.env)
@@ -390,7 +390,7 @@ This template includes a phased implementation plan (Phases A-H) that guides you
 - RESTful API with Express.js
 - Modern React 19 frontend
 - Bilingual support (English/Arabic)
-- AI integration with OpenAI
+- AI integration with Google Gemini
 
 ## License
 

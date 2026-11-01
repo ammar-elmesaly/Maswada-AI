@@ -1,33 +1,30 @@
-# AI Features - OpenAI Integration
+# AI Features - Google Gemini Integration
 
 ## Overview
 
-The backend now includes **production-ready OpenAI integration** for all AI features using GPT-4o-mini.
+The backend now includes Google Gemini integration for all AI features through the `@google/genai` SDK.
 
 ## Architecture
 
-**Direct OpenAI Integration** - No abstraction layers, OpenAI service used directly in AI endpoints.
+**Direct Gemini Integration** - The AI service calls `geminiService` directly, using the configured Gemini model.
 
 ## Setup
 
-### 1. Get OpenAI Credentials
+### 1. Get Gemini Credentials
 
-1. Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Sign in or create an account
-3. Click "Create new secret key"
-4. Copy the key (starts with `sk-`)
-5. (Optional) Get your Organization ID from [Organization Settings](https://platform.openai.com/account/organization)
-   - Only needed if you have multiple organizations
-   - Starts with `org-`
+1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Sign in with your Google account
+3. Create a Gemini API key
+4. Copy the key and keep it private
 
 ### 2. Configure Environment
 
 ```bash
 # In backend/.env
-OPENAI_API_KEY=sk-your_actual_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 
-# Optional: Only if you have multiple organizations
-OPENAI_ORGANIZATION_ID=org-your_organization_id_here
+# Optional: choose a different Gemini model
+GEMINI_MODEL=gemini-3.5-flash-lite
 ```
 
 ### 3. Restart Backend
@@ -36,18 +33,18 @@ OPENAI_ORGANIZATION_ID=org-your_organization_id_here
 npm run dev
 ```
 
-You should see: `🤖 OpenAI: Configured ✓`
+You should see: `🤖 Gemini: Configured ✓`
 
 ## Features
 
 ### 1. Summarize
-- **Model**: gpt-5-mini
+- **Model**: Configured through `GEMINI_MODEL`
 - **Max Tokens**: 500
 - **Language**: Auto-detects from input (English & Arabic)
 - **Use Case**: Generate concise summaries of notes
 
 ### 2. Rewrite
-- **Model**: gpt-5-mini
+- **Model**: Configured through `GEMINI_MODEL`
 - **Max Tokens**: 1000
 - **Modes**:
   - `comedy` - Humorous and entertaining tone
@@ -56,12 +53,12 @@ You should see: `🤖 OpenAI: Configured ✓`
 - **Language**: Auto-detects from input (English & Arabic)
 
 ### 3. Translate
-- **Model**: gpt-5-mini
+- **Model**: Configured through `GEMINI_MODEL`
 - **Max Tokens**: 1000
 - **Auto-Detection**: Detects source language and translates to the opposite
   - English → Arabic
   - Arabic → English
-- **Quality**: Professional translation with GPT-5
+- **Quality**: Professional translation with Gemini
 
 ## API Endpoints
 
@@ -106,43 +103,33 @@ Auto-detects language and translates:
 
 ## Cost Estimation
 
-Using **gpt-5-mini**:
-- Latest GPT-5 model with improved performance
-- Cost-effective pricing for production use
+The cost and capabilities depend on the Gemini model configured in `GEMINI_MODEL`.
 
-Check current pricing at: https://platform.openai.com/docs/pricing
-
-Very affordable and powerful for an MVP! 💰
+Check current pricing at: https://ai.google.dev/gemini-api/docs/pricing
 
 ## Testing
 
-Simply set your `OPENAI_API_KEY` in `.env` and the service will make real API calls to OpenAI.
+Set `GEMINI_API_KEY` in `.env` and the service will make real API calls to Google Gemini.
 
 ## Error Handling
 
 The service handles:
 - Missing API key → Throws error on startup
 - API errors → Returns error message
-- Rate limits → Returns OpenAI's error response
+- Rate limits → Returns the Gemini API error response
 - Invalid responses → Returns fallback message
 
 ## Models Used
 
-Currently using **gpt-5-mini**:
-- ✅ Latest GPT-5 model
-- ✅ Cost-effective
-- ✅ Fast responses
-- ✅ Improved quality for summaries/translations
-- ✅ Better multilingual support (EN/AR)
-
-Can be upgraded to `gpt-5` (full model) by changing the model name in `openai.service.ts`.
+The service uses the model in `GEMINI_MODEL` and defaults to `gemini-3.5-flash-lite`.
+Change that environment variable to switch models without changing application code.
 
 ## Implementation Details
 
-See `backend/src/services/openai.service.ts` for the full implementation.
+See `backend/src/services/gemini.service.ts` for the full implementation.
 
 The service:
-1. Initializes OpenAI client with API key
+1. Initializes the Google GenAI client with the API key
 2. Uses appropriate system prompts for each task
 3. Handles language-specific instructions
 4. Returns clean text responses
@@ -150,7 +137,7 @@ The service:
 
 ## Next Steps
 
-1. ✅ OpenAI provider implemented
+1. ✅ Gemini provider implemented
 2. ⏳ Test with real API key
 3. ⏳ Integrate with frontend UI
 4. ⏳ Add usage monitoring (optional)
