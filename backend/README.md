@@ -86,3 +86,53 @@ Authorization: Bearer <clerk-session-token>
 
 See [AI_FEATURES.md](./AI_FEATURES.md) for Gemini behavior and
 [TESTING.md](./TESTING.md) for API examples.
+
+## Docker Deployment
+
+For a local backend test, create `backend/.env` with development credentials
+and run from the repository root:
+
+```bash
+docker compose up --build -d
+docker compose run --rm backend npm run db:sync
+```
+
+The API is then available at `http://localhost:3001`. Check it with:
+
+```bash
+curl http://localhost:3001/health
+```
+
+For deployment, set `FRONTEND_ORIGIN` to the URL where the frontend is hosted,
+set `DOMAIN` to the public API hostname, create a DNS record for that hostname,
+and use the production overlay:
+
+```text
+api.example.com.  A  <server-public-ip>
+```
+
+The server must allow inbound TCP traffic on ports 80 and 443. Verify DNS
+before deploying:
+
+```bash
+export DOMAIN=api.example.com
+dig +short A "$DOMAIN"
+```
+
+The command must return the server's public IP. Then start the production
+overlay:
+
+```bash
+# Build the backend image
+docker compose -f compose.yaml -f compose.production.yaml build
+
+# Apply the database schema before starting the API
+docker compose -f compose.yaml -f compose.production.yaml run --rm backend node dist/db/sync.js
+
+# Start the backend and Caddy
+docker compose -f compose.yaml -f compose.production.yaml up -d
+```
+
+Caddy terminates HTTPS and proxies `https://$DOMAIN` to the backend. It obtains
+and renews the certificate automatically. The SQLite database is persisted in
+the `maswada_data` Docker volume.

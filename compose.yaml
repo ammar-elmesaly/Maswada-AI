@@ -1,0 +1,18 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - ./backend/.env
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      SQLITE_PATH: /app/data/maswada.db
+    ports:
+      - "127.0.0.1:3001:3001"
+    volumes:
+      - maswada_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  maswada_data:

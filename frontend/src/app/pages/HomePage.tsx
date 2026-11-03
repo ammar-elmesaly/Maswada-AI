@@ -74,7 +74,7 @@ export function HomePage() {
       <div>
         {isLoading && <p><FormattedMessage id="loadingNotes" /></p>}
         {isError && <p><FormattedMessage id="errorLoadingNotes" /></p>}
-        {filteredNotes.length === 0 && <p><FormattedMessage id="noNotesFound" /></p>}
+        {!isLoading && !isError && filteredNotes.length === 0 && <p><FormattedMessage id="noNotesFound" /></p>}
         {filteredNotes && filteredNotes.length > 0 && (
           <div className="flex flex-col gap-4">
             {filteredNotes.map((note) => (

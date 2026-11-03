@@ -3,7 +3,7 @@ import { requireAuth } from '../middlewares/auth';
 import { aiService } from '../services/ai.service';
 import { summarizeSchema, rewriteSchema, translateSchema } from '../validators/ai.schema';
 
-const router = Router();
+const router: Router = Router();
 
 // All routes require authentication
 router.use(requireAuth);

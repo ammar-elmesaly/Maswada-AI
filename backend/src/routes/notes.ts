@@ -3,7 +3,7 @@ import { requireAuth } from '../middlewares/auth';
 import { notesService } from '../services/notes.service';
 import { createNoteSchema, updateNoteSchema } from '../validators/notes.schema';
 
-const router = Router();
+const router: Router = Router();
 
 // All routes require authentication
 router.use(requireAuth);

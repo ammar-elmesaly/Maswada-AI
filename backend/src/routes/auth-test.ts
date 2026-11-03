@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction, RequestHandler } from 'express';
 import { requireAuth } from '../middlewares/auth';
 
-const router = Router();
+const router: Router = Router();
 
 // Test endpoint to verify authentication works
 router.get('/me', requireAuth, (async (req: Request, res: Response, next: NextFunction) => {
