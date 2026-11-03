@@ -1,13 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Alyamama:wght@300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 /* ============================================
    THEME CONFIGURATION (Tailwind v4)
    ============================================ */
 @theme {
-  /* Set Alyamama as default sans font (or custom token) */
-  --font-sans: "Alyamama", sans-serif;
-  --font-alyamama: "Alyamama", sans-serif;
+  --font-sans: "IBM Plex Sans Arabic", sans-serif;
 
   /* Base radius for consistent rounding */
   --radius: 0.625rem;

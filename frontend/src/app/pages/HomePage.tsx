@@ -2,7 +2,7 @@ import { useCreateNote, useNotes } from "@/hooks/useNotes";
 import { GlassCard } from "@/components/common/GlassCard"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Plus, Search } from "lucide-react"
+import { Loader2Icon, Plus, Search, AlertTriangle } from "lucide-react"
 import { useNavigate } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useMemo, useState } from "react";
@@ -72,8 +72,20 @@ export function HomePage() {
         </div>
       </GlassCard>
       <div>
-        {isLoading && <p><FormattedMessage id="loadingNotes" /></p>}
-        {isError && <p><FormattedMessage id="errorLoadingNotes" /></p>}
+        {
+          isLoading &&
+          <p className="flex items-center gap-2">
+            <Loader2Icon className="size-4 animate-spin" />
+            <FormattedMessage id="loadingNotes" />
+          </p>
+        }
+        {
+          isError &&
+          <p className="text-red-500 flex items-center gap-2">
+            <AlertTriangle className="size-4" />
+            <FormattedMessage id="errorLoadingNotes" />
+          </p>
+        }
         {!isLoading && !isError && filteredNotes.length === 0 && <p><FormattedMessage id="noNotesFound" /></p>}
         {filteredNotes && filteredNotes.length > 0 && (
           <div className="flex flex-col gap-4">
