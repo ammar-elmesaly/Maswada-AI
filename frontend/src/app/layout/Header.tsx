@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/hooks/useLanguage";
+import { UserButton } from "@clerk/react";
 import { Languages } from "lucide-react"
 import { FormattedMessage } from "react-intl";
 import { Link } from "react-router-dom"
@@ -27,6 +28,7 @@ export function Header() {
               <Languages />
               <FormattedMessage id={locale === "ar" ? "arabic" : "english"} />
             </Button>
+            <UserButton />
           </div>
         </div>
       </div>

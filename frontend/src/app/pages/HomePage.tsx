@@ -5,10 +5,24 @@ import { Input } from "@/components/ui/input"
 import { Plus, Search } from "lucide-react"
 import { useNavigate } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useMemo, useState } from "react";
 
 export function HomePage() {
   const { data: notes, isLoading, isError } = useNotes();
   const { mutate: createNote } = useCreateNote();
+
+  const [query, setQuery] = useState<string>("");
+  
+  const filteredNotes = useMemo(() => {
+    if (!notes) return [];
+    
+    const sanitizedQuery = query.toLowerCase().trim();
+    if (!sanitizedQuery) return notes;
+
+    return notes.filter((note) =>
+      note.title?.toLowerCase().includes(sanitizedQuery)
+    );
+  }, [notes, query]);
 
   const navigate = useNavigate();
   const { formatMessage } = useIntl();
@@ -19,7 +33,7 @@ export function HomePage() {
 
   const handleCreateNote = (): void => {
     createNote({
-      title: "Untitled",
+      title: formatMessage({ id: "untitledNote" }),
       content: "" 
     },
     {
@@ -27,6 +41,10 @@ export function HomePage() {
         navigate(`/notes/${newNote.id}`);
       }
     });
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setQuery(event.target.value);
   };
 
   return (
@@ -44,19 +62,25 @@ export function HomePage() {
         </div>
         <div className="relative">
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <Input className="pl-10" type="text" placeholder={formatMessage({ id: "searchNotes" })} />
+          <Input 
+            className="pl-10" 
+            type="text" 
+            value={query}
+            placeholder={formatMessage({ id: "searchNotes" })} 
+            onChange={handleSearchChange} 
+          />
         </div>
       </GlassCard>
       <div>
         {isLoading && <p><FormattedMessage id="loadingNotes" /></p>}
         {isError && <p><FormattedMessage id="errorLoadingNotes" /></p>}
-        {notes && notes.length === 0 && <p><FormattedMessage id="noNotesFound" /></p>}
-        {notes && notes.length > 0 && (
+        {filteredNotes.length === 0 && <p><FormattedMessage id="noNotesFound" /></p>}
+        {filteredNotes && filteredNotes.length > 0 && (
           <div className="flex flex-col gap-4">
-            {notes.map((note) => (
+            {filteredNotes.map((note) => (
               <GlassCard key={note.id} className="px-4 py-6 sm:px-6 cursor-pointer" onClick={() => handleNoteClick(note.id)}>
                 <h3 className="text-lg font-semibold">{note.title}</h3>
-                <p className="text-sm text-muted-foreground">{note.content}</p>
+                <p className="text-sm text-muted-foreground line-clamp-1">{note.content}</p>
               </GlassCard>
             ))}
           </div>

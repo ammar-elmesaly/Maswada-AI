@@ -58,8 +58,9 @@ export function useUpdateNote() {
       const token = await getToken();
       return updateNote(noteId, updateNoteDTO, token);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: noteKeys.all });
+    onSuccess: (_, { noteId }) => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+      queryClient.invalidateQueries({ queryKey: ["notes", noteId] });
     },
   });
 }

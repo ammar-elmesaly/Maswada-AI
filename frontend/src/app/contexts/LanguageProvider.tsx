@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { LanguageContext } from "./LanguageContext";
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocale] = useState<Locale>(defaultLocale);
+  const [locale, setLocale] = useState<Locale>(() => localStorage.getItem("locale") as Locale || defaultLocale);
   const isRTL = locale === "ar";
 
   const toggleLanguage = () => {
@@ -13,6 +13,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
+    localStorage.setItem("locale", locale);
   }, [locale, isRTL]);
   
   return (

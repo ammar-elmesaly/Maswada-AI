@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAutosave, type AutosaveStatus } from "@/hooks/useAutosave";
 import { detectTextDirection } from "@/lib/utils";
-import { ArrowLeft, CircleAlertIcon, Languages, Loader2Icon, RotateCcw, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, CircleAlertIcon, Languages, Loader2Icon, RotateCcw, Sparkles } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +19,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import type { Note, CreateNoteDTO, RewriteMode } from "@/types";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export function NotesDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -46,7 +47,8 @@ function NoteEditor({ note }: { note: Note }) {
 
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
-  const [aiOp, setAiOp] = useState(false);
+  const isEmptyContent = content.trim() === "";  // empty content derived state
+  const [isAIOperation, setIsAIOperation] = useState(false);
 
   const { mutateAsync: updateNote } = useUpdateNote();
   const { mutate: deleteNote } = useDeleteNote();
@@ -54,11 +56,18 @@ function NoteEditor({ note }: { note: Note }) {
   const { mutate: summarizeNote } = useSummarize();
   const { mutate: rewriteNote } = useRewrite();
 
+  const { isRTL } = useLanguage();
+
   const save = useCallback(
     (patch: Partial<CreateNoteDTO>) => updateNote({ noteId: note.id, updateNoteDTO: patch }),
     [updateNote, note.id],
   );
   const { queue, flush, discard, hasPending, status } = useAutosave<CreateNoteDTO>(save);
+
+  const handleBack = async () => {
+    await flush();
+    navigate(-1);
+  }
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -91,7 +100,7 @@ function NoteEditor({ note }: { note: Note }) {
   // AI features
 
   const handleTranslate = async () => {
-    setAiOp(true);
+    setIsAIOperation(true);
     await flush();
     if (hasPending()) {
       toast.error(formatMessage({ id: "couldntSaveTranslationCancelled" }));
@@ -117,13 +126,13 @@ function NoteEditor({ note }: { note: Note }) {
           });
         },
         onError: () => toast.error(formatMessage({ id: "failedToTranslateNote" })),
-        onSettled: () => setAiOp(false),
+        onSettled: () => setIsAIOperation(false),
       },
     );
   };
 
   const handleSummarize = async () => {
-    setAiOp(true);
+    setIsAIOperation(true);
     await flush();
     if (hasPending()) {
       toast.error(formatMessage({ id: "couldntSaveSummarizationCancelled" }));
@@ -149,16 +158,16 @@ function NoteEditor({ note }: { note: Note }) {
           });
         },
         onError: () => toast.error(formatMessage({ id: "failedToSummarizeNote" })),
-        onSettled: () => setAiOp(false),
+        onSettled: () => setIsAIOperation(false),
       },
     );
   };
 
   const handleRewrite = async (mode: RewriteMode) => {
-    setAiOp(true);
+    setIsAIOperation(true);
     await flush();
     if (hasPending()) {
-      setAiOp(false);
+      setIsAIOperation(false);
       toast.error(formatMessage({ id: "couldntSaveRewriteCancelled" }));
       return;
     }
@@ -182,7 +191,7 @@ function NoteEditor({ note }: { note: Note }) {
           });
         },
         onError: () => toast.error(formatMessage({ id: "failedToChangeNoteTone" })),
-        onSettled: () => setAiOp(false),
+        onSettled: () => setIsAIOperation(false),
       },
     );
   };
@@ -192,8 +201,8 @@ function NoteEditor({ note }: { note: Note }) {
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <div className="flex gap-4 items-center">
-            <Button variant="outline" className="cursor-pointer" onClick={() => navigate(-1)}>
-              <ArrowLeft className="size-4" />
+            <Button variant="outline" className="cursor-pointer" onClick={handleBack}>
+              { isRTL ? <ArrowRight className="size-4" /> : <ArrowLeft className="size-4" /> }
               <FormattedMessage id="backToAllNotes" />
             </Button>
             <AutoSaveIndicator status={status} onRetry={() => void flush()} />
@@ -205,13 +214,13 @@ function NoteEditor({ note }: { note: Note }) {
           />
         </div>
         <div className="flex flex-wrap gap-4">
-          <Button variant="outline" className="cursor-pointer" disabled={aiOp} onClick={handleSummarize}>
+          <Button variant="outline" className="cursor-pointer" disabled={isAIOperation || isEmptyContent} onClick={handleSummarize}>
             <Sparkles />
             <FormattedMessage id="generateSummary" />
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="cursor-pointer" disabled={aiOp}>
+              <Button variant="outline" className="cursor-pointer" disabled={isAIOperation || isEmptyContent}>
                 <RotateCcw />
                 <FormattedMessage id="changeTone" />
               </Button>
@@ -231,7 +240,7 @@ function NoteEditor({ note }: { note: Note }) {
           <Button
             variant="outline"
             className="cursor-pointer"
-            disabled={aiOp}
+            disabled={isAIOperation || isEmptyContent}
             onClick={handleTranslate}
           >
             <Languages />
@@ -252,7 +261,7 @@ function NoteEditor({ note }: { note: Note }) {
           ref={contentRef}
           value={content}
           dir={detectTextDirection(content)}
-          readOnly={aiOp}
+          readOnly={isAIOperation}
           className="field-sizing-content text-xl! border-none shadow-none bg-transparent dark:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none resize-none overflow-hidden"
           placeholder={formatMessage({ id: "contentPlaceholder" })}
           onChange={handleContentChange}
