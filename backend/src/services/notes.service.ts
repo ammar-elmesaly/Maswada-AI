@@ -31,7 +31,6 @@ export class NotesService {
 
   async update(id: string, userId: string, data: UpdateNoteInput): Promise<Note> {
     const note = await this.findByIdAndUserId(id, userId);
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate a delay of 2 seconds
     await note.update(data);
     return note;
   }
