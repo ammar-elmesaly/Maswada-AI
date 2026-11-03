@@ -1,142 +1,89 @@
-# Maswada AI - Setup Instructions
+# Maswada AI Setup
 
-## Quick Start Guide
+## Requirements
 
-### 1. Get API Credentials
+- Node.js 18 or newer
+- A Clerk application
+- A Google Gemini API key
 
-#### Clerk (Required for Authentication)
-1. Go to [clerk.com](https://clerk.com) and create a free account
-2. Create a new application
-3. From the [Clerk Dashboard](https://dashboard.clerk.com), copy both keys:
-   - **Publishable Key** (starts with `pk_test_`) - Used in frontend
-   - **Secret Key** (starts with `sk_test_`) - Used in backend
+## Configure Credentials
 
-#### Google Gemini (Required for AI Features)
-1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Sign in with your Google account
-3. Create a Gemini API key
-4. Copy the key and keep it private
+### Clerk
 
-### 2. Backend Setup
+1. Create an application at [clerk.com](https://clerk.com).
+2. Copy the publishable key for the frontend.
+3. Copy the secret key for the backend.
+
+### Google Gemini
+
+1. Create an API key in [Google AI Studio](https://aistudio.google.com/app/apikey).
+2. Keep the key private and add it only to `backend/.env`.
+
+## Backend
 
 ```bash
 cd backend
-
-# Install dependencies
 npm install
-
-# Configure environment
 cp .env.example .env
+```
 
-# Edit .env and set:
-# CLERK_PUBLISHABLE_KEY=pk_test_your_publishable_key_here
-# CLERK_SECRET_KEY=sk_test_your_secret_key_here
-# GEMINI_API_KEY=your_gemini_api_key_here
-# GEMINI_MODEL=gemini-3.5-flash-lite  (optional)
+Set these values in `backend/.env`:
 
-# Initialize database
+```text
+CLERK_SECRET_KEY=sk_test_...
+FRONTEND_ORIGIN=http://localhost:5173
+PORT=3001
+SQLITE_PATH=./data/maswada.db
+GEMINI_API_KEY=...
+GEMINI_MODEL=gemini-3.5-flash-lite
+```
+
+Initialize the database and start the development server:
+
+```bash
 npm run db:sync
-
-# Start development server
 npm run dev
 ```
 
-Backend will run on **http://localhost:3001**
+The API is available at `http://localhost:3001`.
 
-### 3. Frontend Setup
+## Frontend
 
 ```bash
 cd frontend
-
-# Install dependencies (already done if you followed along)
-# npm install
-
-# Configure environment
+npm install
 cp .env.example .env
+```
 
-# Edit .env and set:
-# VITE_CLERK_PUBLISHABLE_KEY=pk_test_your_publishable_key_here
+Set these values in `frontend/.env`:
 
-# Start development server
+```text
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
+VITE_API_BASE_URL=http://localhost:3001
+```
+
+Start the development server:
+
+```bash
 npm run dev
 ```
 
-Frontend will run on **http://localhost:5173**
+The application is available at `http://localhost:5173`.
 
 ## Verification
 
-### Test Backend
+Check the backend:
 
 ```bash
 curl http://localhost:3001/health
 ```
 
-Should return:
-```json
-{
-  "status": "ok",
-  "timestamp": "2026-01-14T...",
-  "service": "maswada-ai-backend"
-}
-```
+Then open `http://localhost:5173` and sign in to create a note.
 
-### Test Frontend
+## Troubleshooting
 
-Open http://localhost:5173 in your browser. You should see the Maswada AI landing page.
-
-## Project Status
-
-✅ **Backend**: Fully scaffolded and compiling
-- Express.js server with TypeScript
-- SQLite database with Sequelize
-- All routes defined (health, notes CRUD, AI endpoints)
-- Mock AI provider functional
-- Zod validation schemas ready
-- Error handling middleware in place
-
-✅ **Frontend**: Fully scaffolded and compiling
-- React 19 + Vite + TypeScript
-- Tailwind CSS v4 configured
-- Folder structure with page stubs
-- API client structure ready
-- i18n context prepared
-- Builds successfully
-
-⏳ **Next Steps**: Follow the phased implementation plan in README.md
-
-## Common Issues
-
-### Backend won't start
-- Make sure `CLERK_SECRET_KEY` is set in `backend/.env`
-- Check that port 3001 is not in use
-- Run `npm run db:sync` to initialize database
-
-### Frontend won't start
-- Make sure `VITE_CLERK_PUBLISHABLE_KEY` is set in `frontend/.env`
-- Check that port 5173 is not in use
-- Clear node_modules and reinstall if needed
-
-### TypeScript errors
-- Run `npm run build` to check for compilation errors
-- Both projects should compile without errors
-
-## Development Workflow
-
-1. Start backend: `cd backend && npm run dev`
-2. Start frontend: `cd frontend && npm run dev`
-3. Make changes and see them hot-reload
-4. Follow the implementation plan in README.md
-
-## Implementation Order
-
-Follow the phases in order:
-
-1. **Phase B**: Implement Clerk authentication in backend
-2. **Phase C**: Test notes CRUD operations
-3. **Phase D**: Add real AI provider (optional, mock works)
-4. **Phase E**: Set up React Router and Clerk in frontend
-5. **Phase F**: Build notes UI and connect to API
-6. **Phase G**: Add internationalization (EN/AR)
-7. **Phase H**: Implement AI features UI
-
-Good luck! 🚀
+- Confirm the Clerk keys are set in the correct `.env` file.
+- Confirm the backend is running before using the frontend.
+- Confirm ports 3001 and 5173 are available.
+- Run `npm run db:sync` from `backend` if the database has not been initialized.
+- Run `npm run build` in either project to check TypeScript compilation.

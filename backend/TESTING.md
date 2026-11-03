@@ -1,294 +1,99 @@
-# Backend API Testing Guide
+# Backend API Testing
 
 ## Prerequisites
 
-1. Backend server running: `npm run dev`
-2. Valid Clerk authentication token from frontend
-3. API testing tool (Postman, Thunder Client, or curl)
+1. Start the backend with `npm run dev`.
+2. Obtain a valid Clerk session token from the frontend.
+3. Use `curl`, Postman, or another HTTP client.
+
+Authenticated requests use:
+
+```text
+Authorization: Bearer <clerk-session-token>
+```
+
+## Health Check
+
+```bash
+curl http://localhost:3001/health
+```
+
+This endpoint does not require authentication.
 
 ## Authentication
 
-All protected endpoints require a Bearer token in the Authorization header:
-
+```bash
+curl http://localhost:3001/api/auth/me \
+  -H "Authorization: Bearer <clerk-session-token>"
 ```
-Authorization: Bearer <your_clerk_token>
-```
 
-## Test Endpoints
+## Notes
 
-### 1. Health Check (Public)
+Create a note:
 
 ```bash
-GET http://localhost:3001/health
+curl -X POST http://localhost:3001/api/notes \
+  -H "Authorization: Bearer <clerk-session-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"My First Note","content":"Note content"}'
 ```
 
-**Expected Response:**
-```json
-{
-  "status": "ok",
-  "timestamp": "2026-01-14T...",
-  "service": "maswada-ai-backend"
-}
-```
-
-### 2. Test Authentication
+List notes:
 
 ```bash
-GET http://localhost:3001/api/auth/me
-Authorization: Bearer <your_clerk_token>
+curl http://localhost:3001/api/notes \
+  -H "Authorization: Bearer <clerk-session-token>"
 ```
 
-**Expected Response:**
-```json
-{
-  "message": "Authentication successful",
-  "userId": "user_xxx",
-  "sessionId": "sess_xxx",
-  "timestamp": "2026-01-14T..."
-}
-```
-
-**Possible Errors:**
-- `401`: Missing or invalid token
-- `401`: Token expired
-
----
-
-## Notes CRUD Operations
-
-### 3. Create Note
+Get, update, or delete a note by replacing `NOTE_ID`:
 
 ```bash
-POST http://localhost:3001/api/notes
-Authorization: Bearer <your_clerk_token>
-Content-Type: application/json
+curl http://localhost:3001/api/notes/NOTE_ID \
+  -H "Authorization: Bearer <clerk-session-token>"
 
-{
-  "title": "My First Note",
-  "content": "This is the content of my note"
-}
+curl -X PATCH http://localhost:3001/api/notes/NOTE_ID \
+  -H "Authorization: Bearer <clerk-session-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Updated Title","content":"Updated content"}'
+
+curl -X DELETE http://localhost:3001/api/notes/NOTE_ID \
+  -H "Authorization: Bearer <clerk-session-token>"
 ```
 
-**Expected Response:**
-```json
-{
-  "note": {
-    "id": "uuid-here",
-    "userId": "user_xxx",
-    "title": "My First Note",
-    "content": "This is the content of my note",
-    "language": "en",
-    "summary": null,
-    "createdAt": "2026-01-14T...",
-    "updatedAt": "2026-01-14T..."
-  }
-}
-```
+## AI
 
-### 4. List All Notes
+Summarize text:
 
 ```bash
-GET http://localhost:3001/api/notes
-Authorization: Bearer <your_clerk_token>
+curl -X POST http://localhost:3001/api/ai/summarize \
+  -H "Authorization: Bearer <clerk-session-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Long text to summarize"}'
 ```
 
-**Expected Response:**
-```json
-{
-  "notes": [
-    {
-      "id": "uuid-here",
-      "userId": "user_xxx",
-      "title": "My First Note",
-      "content": "This is the content of my note",
-      "summary": null,
-      "createdAt": "2026-01-14T...",
-      "updatedAt": "2026-01-14T..."
-    }
-  ]
-}
-```
-
-### 5. Get Single Note
+Rewrite text:
 
 ```bash
-GET http://localhost:3001/api/notes/:id
-Authorization: Bearer <your_clerk_token>
+curl -X POST http://localhost:3001/api/ai/rewrite \
+  -H "Authorization: Bearer <clerk-session-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Text to rewrite","mode":"formal"}'
 ```
 
-**Expected Response:**
-```json
-{
-  "note": {
-    "id": "uuid-here",
-    "userId": "user_xxx",
-    "title": "My First Note",
-    "content": "This is the content of my note",
-    "summary": null,
-    "createdAt": "2026-01-14T...",
-    "updatedAt": "2026-01-14T..."
-  }
-}
-```
-
-### 6. Update Note
+Translate text:
 
 ```bash
-PATCH http://localhost:3001/api/notes/:id
-Authorization: Bearer <your_clerk_token>
-Content-Type: application/json
-
-{
-  "title": "Updated Title",
-  "content": "Updated content"
-}
+curl -X POST http://localhost:3001/api/ai/translate \
+  -H "Authorization: Bearer <clerk-session-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Hello world"}'
 ```
 
-**Expected Response:**
-```json
-{
-  "note": {
-    "id": "uuid-here",
-    "userId": "user_xxx",
-    "title": "Updated Title",
-    "content": "Updated content",
-    "summary": null,
-    "createdAt": "2026-01-14T...",
-    "updatedAt": "2026-01-14T..."
-  }
-}
-```
+## Verification Checklist
 
-### 7. Delete Note
-
-```bash
-DELETE http://localhost:3001/api/notes/:id
-Authorization: Bearer <your_clerk_token>
-```
-
-**Expected Response:**
-- Status: `204 No Content`
-- No body
-
----
-
-## AI Features
-
-### 8. Summarize Text
-
-```bash
-POST http://localhost:3001/api/ai/summarize
-Authorization: Bearer <your_clerk_token>
-Content-Type: application/json
-
-{
-  "text": "Long text to summarize..."
-}
-```
-
-**Or with noteId:**
-```json
-{
-  "noteId": "uuid-here"
-}
-```
-
-**Expected Response:**
-```json
-{
-  "result": "Summary of the text..."
-}
-```
-
-**Note:** Summary is returned in the same language as the input.
-
-### 9. Rewrite Text
-
-```bash
-POST http://localhost:3001/api/ai/rewrite
-Authorization: Bearer <your_clerk_token>
-Content-Type: application/json
-
-{
-  "text": "Text to rewrite...",
-  "mode": "comedy"
-}
-```
-
-**Modes:** `comedy`, `formal`, `casual`
-
-**Expected Response:**
-```json
-{
-  "result": "Rewritten text..."
-}
-```
-
-**Note:** Rewritten text is returned in the same language as the input.
-
-### 10. Translate Text
-
-```bash
-POST http://localhost:3001/api/ai/translate
-Authorization: Bearer <your_clerk_token>
-Content-Type: application/json
-
-{
-  "text": "Hello world"
-}
-```
-
-**Expected Response:**
-```json
-{
-  "result": "مرحبا بالعالم"
-}
-```
-
-**Note:** Auto-detects language and translates:
-- English → Arabic
-- Arabic → English
-
----
-
-## Security Features
-
-### ✅ User Scoping
-- All notes are automatically scoped by userId
-- Users cannot access other users' notes
-- Even if a user knows another user's note ID, they cannot access it
-
-### ✅ Token Validation
-- All tokens are verified with Clerk
-- Expired tokens are rejected with clear error messages
-- Invalid tokens return 401 errors
-
-### ✅ Input Validation
-- All requests are validated using Zod schemas
-- Invalid data returns 400 errors with detailed validation messages
-
----
-
-## Testing Checklist
-
-- [ ] Health endpoint works (no auth required)
-- [ ] Auth test endpoint works with valid token
-- [ ] Auth test endpoint fails with invalid token
-- [ ] Create note works
-- [ ] List notes shows only my notes
-- [ ] Get single note works
-- [ ] Update note works
-- [ ] Delete note works
-- [ ] Cannot access other users' notes
-- [ ] AI summarize works
-- [ ] AI rewrite works (all modes)
-- [ ] AI translate works (EN→AR and AR→EN)
-
----
-
-## Next Steps
-
-Once all backend tests pass:
-1. ✅ Backend is fully functional
-2. ⏳ Move to frontend implementation (Phase E)
-3. ⏳ Integrate frontend with backend APIs
+- Health check succeeds without authentication.
+- Invalid or missing tokens return `401`.
+- Notes are limited to the authenticated user.
+- Note CRUD operations work.
+- Summarization, rewriting, and translation return results with a valid
+  `GEMINI_API_KEY`.

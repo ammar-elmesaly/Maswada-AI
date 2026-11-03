@@ -1,102 +1,73 @@
-# Maswada AI - Backend API
+# Maswada AI Backend
 
-Backend REST API for the Maswada AI note-taking application with AI features.
+REST API for the Maswada AI note-taking application.
 
-## Tech Stack
+## Stack
 
-- **Runtime**: Node.js + TypeScript
-- **Framework**: Express.js
-- **Database**: SQLite with Sequelize ORM
-- **Authentication**: Clerk (token verification)
-- **Validation**: Zod
-- **AI Provider**: Google Gemini via `@google/genai`
+- Node.js and TypeScript
+- Express
+- SQLite with Sequelize
+- Clerk authentication
+- Zod validation
+- Google Gemini through `@google/genai`
 
 ## Setup
 
-### 1. Install Dependencies
-
 ```bash
 npm install
-```
-
-### 2. Configure Environment
-
-Copy `.env.example` to `.env` and fill in the values:
-
-```bash
 cp .env.example .env
-```
-
-Required configuration:
-
-- `CLERK_SECRET_KEY`: Get from Clerk dashboard
-- `FRONTEND_ORIGIN`: Frontend URL for CORS (default: http://localhost:5173)
-- `PORT`: Server port (default: 3001)
-- `SQLITE_PATH`: Database file path (default: ./data/maswada.db)
-
-### 3. Initialize Database
-
-```bash
 npm run db:sync
-```
-
-This will create the SQLite database and tables.
-
-### 4. Start Development Server
-
-```bash
 npm run dev
 ```
 
-The server will start on `http://localhost:3001` (or your configured PORT).
+The server runs at `http://localhost:3001` by default.
+
+Configure these values in `.env`:
+
+- `CLERK_SECRET_KEY`
+- `FRONTEND_ORIGIN` (defaults to `http://localhost:5173`)
+- `PORT` (defaults to `3001`)
+- `SQLITE_PATH` (defaults to `./data/maswada.db`)
+- `GEMINI_API_KEY`
+- `GEMINI_MODEL` (optional)
 
 ## Scripts
 
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build TypeScript to JavaScript
-- `npm start` - Start production server
-- `npm run db:sync` - Sync database schema
+- `npm run dev` - Start with hot reload
+- `npm run build` - Compile TypeScript
+- `npm start` - Start the compiled server
+- `npm run db:sync` - Create or update database tables
 
-## API Endpoints
+## API
 
 ### Public
 
 - `GET /health` - Health check
 
-### Protected (require Bearer token)
+### Authenticated
 
-**Notes:**
+All authenticated endpoints require a valid Clerk bearer token:
 
-- `GET /api/notes` - List all notes for authenticated user
-- `POST /api/notes` - Create a new note
-- `GET /api/notes/:id` - Get a single note
+```text
+Authorization: Bearer <clerk-session-token>
+```
+
+- `GET /api/auth/me` - Verify the current session
+- `GET /api/notes` - List the current user's notes
+- `POST /api/notes` - Create a note
+- `GET /api/notes/:id` - Get a note
 - `PATCH /api/notes/:id` - Update a note
 - `DELETE /api/notes/:id` - Delete a note
+- `POST /api/ai/summarize` - Summarize text or a note
+- `POST /api/ai/rewrite` - Rewrite text in comedy, formal, or casual style
+- `POST /api/ai/translate` - Translate between English and Arabic
 
-**AI Features:**
-
-- `POST /api/ai/summarize` - Summarize text or note
-- `POST /api/ai/rewrite` - Rewrite text in different styles
-- `POST /api/ai/translate` - Translate text between English and Arabic
-
-## Authentication
-
-All protected routes require a Bearer token in the Authorization header:
-
-```
-Authorization: Bearer <clerk_session_token>
-```
-
-The backend verifies tokens with Clerk and extracts the `userId` to scope all operations.
-
-## Data Model
-
-### Note
+## Note Model
 
 ```typescript
 {
-  id: string;           // UUID
-  userId: string;       // Clerk user ID
+  id: string;
+  userId: string;
   title: string;
   content: string;
   language: 'en' | 'ar';
@@ -106,31 +77,12 @@ The backend verifies tokens with Clerk and extracts the `userId` to scope all op
 }
 ```
 
-## AI Features (Google Gemini)
+## Security
 
-The backend uses Google's Gemini models directly through the `@google/genai` SDK for all AI features.
+- Clerk tokens are verified before protected routes execute.
+- Database queries are scoped to the authenticated `userId`.
+- Request bodies are validated with Zod.
+- Errors are handled centrally by `src/middlewares/errorHandler.ts`.
 
-**Setup:**
-
-1. Get an API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Set `GEMINI_API_KEY=...` in `.env`
-3. (Optional) Set `GEMINI_MODEL=gemini-3.5-flash-lite` to choose a model
-
-**Features:**
-
-- **Summarize**: Concise summaries in EN or AR
-- **Rewrite**: Multiple modes (comedy, formal, casual)
-- **Translate**: High-quality EN ↔ AR translation powered by Gemini
-- **Model**: Uses the model configured by `GEMINI_MODEL`
-
-## Development Notes
-
-- The project is scaffolded with stub implementations marked with `// TODO` comments
-- Clerk token verification is stubbed in `src/middlewares/auth.ts` (implement in Phase B)
-- Mock AI provider is functional but returns placeholder text
-- Error handling is centralized in `src/middlewares/errorHandler.ts`
-- All database queries are automatically scoped by `userId` for security
-
-## Next Steps
-
-See the root README.md for the implementation plan (Phases A-H).
+See [AI_FEATURES.md](./AI_FEATURES.md) for Gemini behavior and
+[TESTING.md](./TESTING.md) for API examples.
