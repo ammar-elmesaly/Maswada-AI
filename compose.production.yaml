@@ -1,5 +1,6 @@
 services:
   backend:
+    image: ${BACKEND_IMAGE:-ghcr.io/entryvoid/maswada-ai:latest}
     environment:
       NODE_ENV: production
     ports: []
