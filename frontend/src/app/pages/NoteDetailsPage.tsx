@@ -203,7 +203,9 @@ function NoteEditor({ note }: { note: Note }) {
           <div className="flex gap-4 items-center">
             <Button variant="outline" className="cursor-pointer" onClick={handleBack}>
               { isRTL ? <ArrowRight className="size-4" /> : <ArrowLeft className="size-4" /> }
-              <FormattedMessage id="backToAllNotes" />
+              <span className="hidden sm:inline">
+                <FormattedMessage id="backToAllNotes" />
+              </span>
             </Button>
             <AutoSaveIndicator status={status} onRetry={() => void flush()} />
           </div>
@@ -251,7 +253,7 @@ function NoteEditor({ note }: { note: Note }) {
       <div className="flex flex-col gap-4">
         <Input
           value={title}
-          dir={detectTextDirection(title)}
+          dir={detectTextDirection(title, isRTL)}
           className="text-3xl! font-bold border-none shadow-none bg-transparent dark:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
           placeholder={formatMessage({ id: "titlePlaceholder" })}
           onKeyDown={handleTitleKeyDown}
@@ -260,7 +262,7 @@ function NoteEditor({ note }: { note: Note }) {
         <Textarea
           ref={contentRef}
           value={content}
-          dir={detectTextDirection(content)}
+          dir={detectTextDirection(content, isRTL)}
           readOnly={isAIOperation}
           className="field-sizing-content text-xl! border-none shadow-none bg-transparent dark:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none resize-none overflow-hidden"
           placeholder={formatMessage({ id: "contentPlaceholder" })}

@@ -10,8 +10,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export function detectTextDirection(text?: string): "ltr" | "rtl" {
-  if (!text) return "ltr"; // Default to LTR if no text is provided
+export function detectTextDirection(text?: string, isRTL?: boolean): "ltr" | "rtl" {
+  if (!text && isRTL) {
+    return "rtl";
+  } else if (!text) {
+    return "ltr";
+  }
   
   const rtlChars = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
   return rtlChars.test(text) ? "rtl" : "ltr";

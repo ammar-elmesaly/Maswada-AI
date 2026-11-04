@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom"
 
 import { Footer } from "@/app/layout/Footer"
 import { Header } from "@/app/layout/Header"
-import { Toaster } from "sonner"
+import { Toaster } from "@/components/ui/sonner"
 
 export function AppLayout() {
   return (

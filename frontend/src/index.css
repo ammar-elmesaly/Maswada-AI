@@ -1,6 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0 at var(--theme-transition-x) var(--theme-transition-y));
+  }
+
+  to {
+    clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
+  }
+}
+
 /* ============================================
    THEME CONFIGURATION (Tailwind v4)
    ============================================ */
@@ -44,29 +56,33 @@
     color-scheme: light;
   }
 
+  .dark {
+    color-scheme: dark;
+  }
+
   ::selection {
-    @apply bg-black text-white;
+    @apply bg-primary text-primary-foreground;
   }
 
   .dark {
-    --color-background: oklch(0.145 0 0);
-    --color-foreground: oklch(0.985 0 0);
-    --color-card: oklch(0.205 0 0);
-    --color-card-foreground: oklch(0.985 0 0);
-    --color-popover: oklch(0.205 0 0);
-    --color-popover-foreground: oklch(0.985 0 0);
-    --color-primary: oklch(0.922 0 0);
-    --color-primary-foreground: oklch(0.205 0 0);
-    --color-secondary: oklch(0.269 0 0);
-    --color-secondary-foreground: oklch(0.985 0 0);
-    --color-muted: oklch(0.269 0 0);
-    --color-muted-foreground: oklch(0.708 0 0);
-    --color-accent: oklch(0.269 0 0);
-    --color-accent-foreground: oklch(0.985 0 0);
-    --color-destructive: oklch(0.704 0.191 22.216);
-    --color-border: oklch(1 0 0 / 10%);
-    --color-input: oklch(1 0 0 / 15%);
-    --color-ring: oklch(0.556 0 0);
+    --color-background: oklch(0.16 0 0);
+    --color-foreground: oklch(0.9 0 0);
+    --color-card: oklch(0.21 0 0);
+    --color-card-foreground: oklch(0.9 0 0);
+    --color-popover: oklch(0.21 0 0);
+    --color-popover-foreground: oklch(0.9 0 0);
+    --color-primary: oklch(0.78 0 0);
+    --color-primary-foreground: oklch(0.16 0 0);
+    --color-secondary: oklch(0.26 0 0);
+    --color-secondary-foreground: oklch(0.9 0 0);
+    --color-muted: oklch(0.26 0 0);
+    --color-muted-foreground: oklch(0.7 0 0);
+    --color-accent: oklch(0.3 0 0);
+    --color-accent-foreground: oklch(0.93 0 0);
+    --color-destructive: oklch(0.67 0.16 25);
+    --color-border: oklch(0.75 0 0 / 18%);
+    --color-input: oklch(0.75 0 0 / 22%);
+    --color-ring: oklch(0.72 0 0);
   }
 
   /* Fixed typo: changed "-" to "*" */
@@ -93,11 +109,34 @@
   }
 }
 
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 500ms;
+  animation-timing-function: ease-out;
+}
+
+::view-transition-old(root) {
+  animation: none;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  animation-name: theme-reveal;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 1ms;
+  }
+}
+
 /* ============================================
    GLASSMORPHISM UTILITIES
    ============================================ */
 @layer components {
   .glass-card {
-    @apply rounded-2xl bg-white/70 backdrop-blur-xl border border-black/10 shadow-xl;
+    @apply rounded-2xl bg-white/70 backdrop-blur-xl border border-black/10 shadow-xl dark:bg-neutral-800/70 dark:border-white/10;
   }
 }

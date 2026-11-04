@@ -31,7 +31,9 @@ export function DeleteButton({ handleDelete, title, description, buttonText = "D
           className="text-red-500 font-semi-bold hover:text-red-600 cursor-pointer"
         >
           <Trash2 />
-          {buttonText === "Delete Note" ? <FormattedMessage id="deleteNote" /> : buttonText}
+          <span className="hidden sm:inline">
+            {buttonText === "Delete Note" ? <FormattedMessage id="deleteNote" /> : buttonText}
+          </span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent size="sm">
